@@ -1,5 +1,5 @@
 <?php
-    namespace Dubpub\LaravelCommode\Common\Reflections;
+    namespace LaravelCommode\Common\Reflections;
 
     use ReflectionClass;
 

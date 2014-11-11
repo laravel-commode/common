@@ -1,4 +1,4 @@
-<?php namespace Dubpub\LaravelCommode\Common\Resolver;
+<?php namespace LaravelCommode\Common\Resolver;
 
     use Closure;
     use Illuminate\Foundation\Application;

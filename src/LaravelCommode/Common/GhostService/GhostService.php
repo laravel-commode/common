@@ -1,8 +1,8 @@
-<?php namespace Dubpub\LaravelCommode\Common\GhostService;
+<?php namespace LaravelCommode\Common\GhostService;
 
-    use Dubpub\LaravelCommode\Common\Constants\ServiceShortCuts;
-    use Dubpub\LaravelCommode\Common\Resolver\Resolver;
-    use Dubpub\LaravelCommode\Common\GhostService\GhostServices;
+    use LaravelCommode\Common\Constants\ServiceShortCuts;
+    use LaravelCommode\Common\Resolver\Resolver;
+    use LaravelCommode\Common\GhostService\GhostServices;
     use Illuminate\Support\ServiceProvider;
 
     abstract class GhostService extends ServiceProvider
@@ -11,7 +11,7 @@
         abstract public function registering();
 
         /**
-         * @return \Dubpub\LaravelCommode\Common\Resolver\Resolver
+         * @return \LaravelCommode\Common\Resolver\Resolver
          */
         protected function resolver()
         {

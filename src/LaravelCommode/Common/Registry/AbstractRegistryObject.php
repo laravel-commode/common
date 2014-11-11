@@ -1,4 +1,4 @@
-<?php namespace Dubpub\LaravelCommode\Common\Registry;
+<?php namespace LaravelCommode\Common\Registry;
 
     abstract class AbstractRegistryObject extends AbstractRegistry
     {

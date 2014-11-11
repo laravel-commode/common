@@ -1,7 +1,7 @@
 <?php
-    namespace Dubpub\LaravelCommode\Common\Casting;
+    namespace LaravelCommode\Common\Casting;
 
-    use Dubpub\LaravelCommode\Common\Registry\AbstractRegistry;
+    use LaravelCommode\Common\Registry\AbstractRegistry;
 
     class ImplodeStrings extends AbstractRegistry
     {

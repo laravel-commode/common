@@ -1,9 +1,9 @@
 <?php
-	namespace Dubpub\LaravelCommode\Common;
+	namespace LaravelCommode\Common;
 
-	use Dubpub\LaravelCommode\Common\Constants\ServiceShortCuts;
-	use Dubpub\LaravelCommode\Common\GhostService\GhostServices;
-	use Dubpub\LaravelCommode\Common\Resolver\Resolver;
+	use LaravelCommode\Common\Constants\ServiceShortCuts;
+	use LaravelCommode\Common\GhostService\GhostServices;
+	use LaravelCommode\Common\Resolver\Resolver;
     use Illuminate\Support\ServiceProvider;
 
     class CommodeCommonServiceProvider extends ServiceProvider
@@ -17,14 +17,14 @@
 		public function provides()
 		{
 			return array(
-				'dubpub.utils.resolver',
-				'dubpub.utils.ghostservices'
+				'commode.common.resolver',
+				'commode.common.ghostservices'
 			 );
 		}
 
         public function boot()
         {
-            $this->package('dubpub/laravel-utils');
+            $this->package('laravel-commode/common');
         }
 
         /**

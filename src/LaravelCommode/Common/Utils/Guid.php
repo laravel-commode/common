@@ -1,4 +1,4 @@
-<?php namespace Dubpub\LaravelCommode\Common\Utils;
+<?php namespace LaravelCommode\Common\Utils;
         
     class Guid 
     {

@@ -1,5 +1,5 @@
 <?php
-    namespace Dubpub\LaravelCommode\Common\Constants;
+    namespace LaravelCommode\Common\Constants;
 
     /**
      * Created by PhpStorm.
@@ -9,6 +9,6 @@
      */
     class ServiceShortCuts
     {
-        const GHOST_SERVICE = 'dubpub.utils.ghostservice';
-        const RESOLVER_SERVICE = 'dubpub.utils.resolver';
+        const GHOST_SERVICE = 'commode.common.ghostservice';
+        const RESOLVER_SERVICE = 'commode.common.resolver';
     }

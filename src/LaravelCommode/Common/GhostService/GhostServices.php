@@ -1,5 +1,5 @@
 <?php
-    namespace Dubpub\LaravelCommode\Common\GhostService;
+    namespace LaravelCommode\Common\GhostService;
 
     class GhostServices
     {

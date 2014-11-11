@@ -1,4 +1,4 @@
-<?php namespace Dubpub\LaravelCommode\Common\Registry;
+<?php namespace LaravelCommode\Common\Registry;
         
     use ArrayAccess;
     use Illuminate\Support\Contracts\ArrayableInterface;
