@@ -16,6 +16,5 @@
             "LaravelCommode\\Common": "src/"
         }
     },
-    "target-dir": "LaravelCommode\\Common",
     "minimum-stability": "stable"
 }
