@@ -43,8 +43,10 @@
             return false;
         }
 
-        protected function resolveParams()
+        public function resolveMethodParameters($class, $method, $parameters)
         {
+            $reflection = new ReflectionMethod($class, $method);
+            return $this->resolve($reflection->getParameters(), $parameters);
 
         }
 
