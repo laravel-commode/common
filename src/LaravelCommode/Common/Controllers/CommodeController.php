@@ -10,7 +10,7 @@
      * Date: 11/15/14
      * Time: 3:46 AM
      */
-    class CommodeController 
+    class CommodeController extends Controller
     {
         protected $resolveMethods = true;
 
