@@ -263,8 +263,8 @@ functionality that often being questioned on StackOverflow and resources like th
 <code>LaravelCommode\Common\Controllers\CommodeController</code> provides resolvable method calls and can separate ajax
 calls into different methods or disallow ajax calls at all.
 
-Methods resolver is enabled by default, but you can disable is by overriding <code>protected $resolveMethods</code> and
-setting it to <code>protected $resolveMethods = false;</code>. This functionality is extremely useful with
+Methods resolver is enabled by default, but you can disable is by overriding <code>protected $resolveMethods</code>
+and setting it to <code>protected $resolveMethods = false;</code>. This functionality is extremely useful with
 __laravel-commode/viewmodel__ package installed. Example:
 
     <?php namespace MyApp\Domain\Areas\Administrator\Controllers;
@@ -304,8 +304,8 @@ __laravel-commode/viewmodel__ package installed. Example:
         }
 
 Ajax separation calls are disable by default, but you can enable it by overriding
-<code>protected $separateRequests</code> and setting it to <code>protected $separateRequests = true;</code>. To define
-an ajax method simply adding 'ajax_' prefix to your method name. Example:
+<code>protected $separateRequests</code> and setting it to <code>protected $separateRequests = true;</code>. To
+define an ajax method simply adding 'ajax_' prefix to your method name. Example:
 
     <?php namespace MyApp\Domain\Areas\Site\Controllers;
 
@@ -337,3 +337,5 @@ an ajax method simply adding 'ajax_' prefix to your method name. Example:
             }
         }
 
+You can disallow ajax calls by overriding <code>protected $allowAjax</code>and  setting it to
+<code>protected $allowAjax = false;</code>.
