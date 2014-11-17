@@ -43,17 +43,12 @@
             return false;
         }
 
-        protected function resolveParams()
-        {
-
-        }
-
         /**
          * @param ReflectionParameter[] $reflectionParams
          * @param array $params
          * @return array
          */
-        public function resolve($reflectionParams, $params = array())
+        public function resolve($reflectionParams, $params = [])
         {
             foreach($reflectionParams as $key => $reflectionParam)
             {
@@ -66,7 +61,7 @@
             return $params;
         }
 
-        public function method($class, $method, $params = array())
+        public function method($class, $method, $params = [])
         {
             $reflection = new ReflectionMethod($class, $method);
             $resolved = $this->resolve($reflection->getParameters(), $params);
@@ -93,7 +88,7 @@
             };
         }
 
-        public function closure(Closure $closure, $params = array())
+        public function closure(Closure $closure, $params = [])
         {
             $reflection = new \ReflectionFunction($closure);
             $resolved = $this->resolve($reflection->getParameters(), $params);
@@ -106,5 +101,10 @@
             {
                 return $this->closure($closure, func_get_args());
             };
+        }
+
+        public function resolveMethodParameters($class, $method, $params = [])
+        {
+            return $this->resolve((new ReflectionMethod($class, $method))->getParameters(), $params);
         }
     }

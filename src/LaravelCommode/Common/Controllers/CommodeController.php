@@ -30,7 +30,7 @@
         private function checkAllowAjax($isAjax = null)
         {
             $isAjax = is_null($isAjax) ? app('request')->ajax() : $isAjax;
-            return $isAjax == !$this->allowAjax;
+            return $isAjax && $this->allowAjax;
         }
 
         private function checkAjaxMethod($method, $isAjax = null)
@@ -49,7 +49,7 @@
         {
             $isAjax = app('request')->ajax();
 
-            if ($this->checkAllowAjax($isAjax))
+            if (!$this->checkAllowAjax($isAjax))
             {
                 return $this->missingMethod();
             }
