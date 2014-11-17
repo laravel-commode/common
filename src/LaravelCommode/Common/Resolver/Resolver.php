@@ -43,10 +43,8 @@
             return false;
         }
 
-        public function resolveMethodParameters($class, $method, $parameters)
+        protected function resolveParams()
         {
-            $reflection = new ReflectionMethod($class, $method);
-            return $this->resolve($reflection->getParameters(), $parameters);
 
         }
 
@@ -72,7 +70,19 @@
         {
             $reflection = new ReflectionMethod($class, $method);
             $resolved = $this->resolve($reflection->getParameters(), $params);
-            return call_user_func_array([$class, $method], $resolved);
+
+            try {
+                $result = call_user_func_array([$class, $method], $resolved);
+            } catch(\Exception $e) {
+                if (is_string($class)) {
+                    $class = app($class);
+                    $result = call_user_func_array([$class, $method], $resolved);
+                } else {
+                    throw $e;
+                }
+            }
+
+            return $result;
         }
 
         public function methodToClosure($class, $method)
