@@ -39,7 +39,7 @@
 
             if ($this->separateRequests && $isAjax)
             {
-                return 'ajax'.$method;
+                return 'ajax_'.$method;
             }
 
             return $method;
