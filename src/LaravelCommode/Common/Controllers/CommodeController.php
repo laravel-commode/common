@@ -49,7 +49,7 @@
         {
             $isAjax = app('request')->ajax();
 
-            if (!$this->checkAllowAjax($isAjax))
+            if (!$this->allowAjax && !$this->checkAllowAjax($isAjax))
             {
                 return $this->missingMethod();
             }
