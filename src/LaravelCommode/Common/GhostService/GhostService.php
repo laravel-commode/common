@@ -23,8 +23,11 @@
 
         private function prepareService()
         {
-            if (!$this->app->bound('commode.loaded'))
-            {
+            if (CommodeCommonServiceProvider::class == static::class) {
+                return null;
+            }
+
+            if (!$this->app->bound('commode.loaded')) {
                 $this->services([CommodeCommonServiceProvider::class]);
             }
 
@@ -43,6 +46,11 @@
             }
 
             $this->launching();
+        }
+
+        public function __construct($app)
+        {
+            parent::__construct($app);
         }
 
         public function register()
