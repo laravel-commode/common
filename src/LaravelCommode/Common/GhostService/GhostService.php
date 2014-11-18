@@ -1,5 +1,6 @@
 <?php namespace LaravelCommode\Common\GhostService;
 
+    use LaravelCommode\Common\CommodeCommonServiceProvider;
     use LaravelCommode\Common\Constants\ServiceShortCuts;
     use LaravelCommode\Common\Resolver\Resolver;
     use LaravelCommode\Common\GhostService\GhostServices;
@@ -7,6 +8,8 @@
 
     abstract class GhostService extends ServiceProvider
     {
+        protected static $coreLoaded = false;
+
         abstract public function launching();
         abstract public function registering();
 
@@ -20,6 +23,11 @@
 
         private function prepareService()
         {
+            if (!$this->app->bound('commode.loaded'))
+            {
+                $this->services([CommodeCommonServiceProvider::class]);
+            }
+
             $this->with([ServiceShortCuts::GHOST_SERVICE], function(GhostServices $appServices) {
                 $services = array_diff($this->uses(), $appServices->getRegistered());
                 $appServices->registers($services);
