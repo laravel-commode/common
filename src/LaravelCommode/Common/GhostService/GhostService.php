@@ -6,103 +6,185 @@
     use LaravelCommode\Common\GhostService\GhostServices;
     use Illuminate\Support\ServiceProvider;
 
+    /**
+     * Class GhostService
+     *
+     * Is a smart Illuminate\Support\ServiceProvider wrapper
+     * which main purpose to give a developer an ability for lazyloading of
+     * all dependent service providers before the instance is registered/booted.
+     * And there're some more features that you might find useful.
+     *
+     * @author Volynov Andrew
+     * @package LaravelCommode\Common\GhostService
+     */
     abstract class GhostService extends ServiceProvider
     {
-        protected static $coreLoaded = false;
 
+        /**
+         * Will be triggered when the app's 'booting' event is triggered
+         */
         abstract public function launching();
+
+
+        /**
+         * Triggered when service is being registered
+         */
         abstract public function registering();
 
         /**
+         * Returns application's Resolver instance
          * @return \LaravelCommode\Common\Resolver\Resolver
          */
-        protected function resolver()
+        private function getResolver()
         {
-            return $this->app[ServiceShortCuts::RESOLVER_SERVICE];
+            return $this->app(ServiceShortCuts::RESOLVER_SERVICE);
         }
 
+        /**
+         * Prepares service for launching. If LaravelCommode\Common\CommodeCommonServiceProvider
+         * is not registered in your app config, it will be forced to launch. Loads all services
+         * used by current GhostService instance.
+         *
+         * @return $this
+         */
         private function prepareService()
         {
-            if (CommodeCommonServiceProvider::class == static::class) {
-                return null;
+            /**
+             * Check if current provider instance is not CommodeCommonServiceProvider -
+             * if it is CommodeCommonServiceProvider, abort loading dependent services
+             */
+            if (CommodeCommonServiceProvider::class == static::class)
+            {
+                return $this;
             }
 
-            if (!$this->app->bound('commode.loaded')) {
-                $this->services([CommodeCommonServiceProvider::class]);
-            }
+            $this->with(ServiceShortCuts::GHOST_SERVICE, function(GhostServices $appServices) {
+                /**
+                 * If CommodeCommonServiceProvider is not loaded yet, load it
+                 * and mark as registered in GhostServices
+                 */
+                if (!$this->app->bound(ServiceShortCuts::CORE_INITIALIZED))
+                {
+                    $this->services([CommodeCommonServiceProvider::class]);
+                    $appServices->register(CommodeCommonServiceProvider::class);
+                }
 
-            $this->with([ServiceShortCuts::GHOST_SERVICE], function(GhostServices $appServices) {
-                $services = array_diff($this->uses(), $appServices->getRegistered());
-                $appServices->registers($services);
-                $this->services($services, true);
+                /**
+                 * Get and register service providers in ServiceManager
+                 */
+                $services = $appServices->differUnique($this->uses(), true);
+
+                /**
+                 * Register service proviers in laravel app
+                 */
+                $this->services($services);
             });
+
             return $this;
         }
 
-        public function launchClosure()
+        /**
+         * Method is triggered when application 'booting' event is fired.
+         * First it resolves all array of method names that is
+         * extraxted from resolving() method. Then it calls
+         * launching() method.
+         */
+        private function launchClosure()
         {
             foreach($this->resolving() as $methodName) {
-                $this->resolver()->method($this, $methodName, []);
+                $this->getResolver()->method($this, $methodName, [], true);
             }
+
 
             $this->launching();
         }
 
-        public function __construct($app)
-        {
-            parent::__construct($app);
-        }
-
+        /**
+         * Method prepares service provider for registering/launching.
+         * It loads all dependent providers and binds 'booting' callbacks.
+         */
         public function register()
         {
-            $this->prepareService();
+            /**
+             * Prepare service and run registering() method
+             */
+            $this->prepareService()->registering();
 
-            $this->registering();
-            $this->app->booting($this->resolver()->methodToClosure($this, 'launchClosure'));
+            /**
+             * Bind app's 'booting' event resolving and launching methods
+             */
+            $this->app->booting($this->getResolver()->makeClosure(function () {
+                $this->launchClosure();
+            }));
         }
 
-        public function uses()
-        {
-            return [];
-        }
-
-        public function resolving()
+        /**
+         * An array of depended service providers that
+         * current service provider uses.
+         *
+         * @return string[]
+         */
+        protected function uses()
         {
             return [];
         }
 
         /**
-         * @param string|array $service
+         * An array of method names that need to be resolved before
+         * app's 'booting' event is triggered
+         * @return string[]
+         */
+        protected function resolving()
+        {
+            return [];
+        }
+
+        /**
+         * A useful helper method that allows you to avoid facades'
+         * usage panic and work straight with IoC bindings. E.g.:
+         *
+         *      $this->with('view', function (\Illuminate\View\Factory $factory)
+         *      {
+         *          $factory->addExtension('my-ext', '/path/to/my/ext');
+         *      });
+         *
+         *  Or:
+         *
+         *      $with = ['view', \Utils\Interfaces\IMenuService::class];
+         *      $this->with($with, function (\Illuminate\View\Factory $factory, \Utils\Interfaces\IMenuService $service)
+         *      {
+         *          $this->doSomethingWithView($factory);
+         *          $this->doSomethingWithService($service);
+         *      });
+         *
+         * @param string|array $withService IoC bindings name or array of names
          * @param callable $do
          */
-        public function with($service, callable $do)
+        protected function with($withService, callable $do)
         {
-            if (is_string($service)) {
-                $service = [$service];
+            if (is_string($withService))
+            {
+                $withService = [$withService];
             }
 
-            foreach ($service as $key => $item) {
-                $service[$key] = $this->app->make($item);
+            foreach ($withService as $key => $item)
+            {
+                $withService[$key] = $this->app->make($item);
             }
 
-            call_user_func_array($do, $service);
+            call_user_func_array($do, $withService);
         }
 
-        public function services(array $services = [])
+        /**
+         * Registers array of service providers in
+         * laravel application.
+         * @param array $services
+         */
+        private function services(array $services = [])
         {
-            foreach($services as $key => $service) {
-                if (is_array($service)) {
-                    $this->app->registerDeferredProvider(array_keys($service)[0]);
-                } else {
-                    $this->app->forceRegister($service, []);
-                }
-            }
-        }
-
-        public function deferedServices(array $services = [])
-        {
-            foreach($services as $service) {
-                $this->app->registerDeferredProvider($service);
+            foreach($services as $service)
+            {
+                $this->app->forceRegister($service, []);
             }
         }
     }

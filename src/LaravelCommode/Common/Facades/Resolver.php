@@ -4,10 +4,12 @@
     use LaravelCommode\Common\Constants\ServiceShortCuts;
 
     /**
-     * Created by PhpStorm.
-     * User: madman
-     * Date: 11/19/14
-     * Time: 1:06 AM
+     * Class Resolver
+     *
+     * Facade for laravel-commode/common resolver
+     *
+     * @author Volynov Andrey
+     * @package LaravelCommode\Common\Facades
      */
     class Resolver extends Facade
     {

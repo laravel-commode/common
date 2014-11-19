@@ -8,6 +8,15 @@
     use LaravelCommode\Common\Resolver\Resolver;
     use Illuminate\Support\ServiceProvider;
 
+    /**
+     * Class CommodeCommonServiceProvider
+     *
+     * Is a common service for all laravel-commode packages.
+     * It binds Resolver and GhostService manager.
+     *
+     * @author Volynov Andrew
+     * @package LaravelCommode\Common
+     */
     class CommodeCommonServiceProvider extends GhostService
     {
         /**
@@ -22,17 +31,27 @@
             ];
         }
 
+        /**
+         * Bootstrap the application events.
+         *
+         * @return void
+         */
         public function boot()
         {
             $this->package('laravel-commode/common');
         }
 
+        /**
+         * Will be triggered when the app's 'booting' event is triggered
+         */
         public function launching()
         {
-            $loader = AliasLoader::getInstance();
-            $loader->alias('CommodeResolver', 'LaravelCommode\Common\Facades\Resolver');
+            $this->app->alias('CommodeResolver', 'LaravelCommode\Common\Facades\Resolver');
         }
 
+        /**
+         * Triggered when service is being registered
+         */
         public function registering()
         {
             $this->app->bindShared(ServiceShortCuts::RESOLVER_SERVICE, function()
@@ -45,6 +64,6 @@
                 return new GhostServices($this->app);
             });
 
-            $this->app->bind('commode.loaded', true);
+            $this->app->bind(ServiceShortCuts::CORE_INITIALIZED, true);
         }
     }

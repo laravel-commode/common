@@ -7,16 +7,25 @@
      * Guid generator in case function com_create_guid()
      * does not exists.
      *
+     * @author Volynov Andrey
      * @package LaravelCommode\Common\Utils
      */
     class Guid
     {
-        protected $guid;
         /**
+         * Keeps generated guid value
+         * @var string
+         */
+        protected $guid;
+
+        /**
+         * Indicates if generated guid needs to be wrapped by curly brackets
          * @var bool
          */
         private $wrap;
+
         /**
+         * Indicates if generated guid will be in lower case
          * @var bool
          */
         private $lowerCase;
@@ -24,8 +33,8 @@
         /**
          * Guid constructor
          *
-         * @param bool $lowerCase Defines if generated guid will be in lower case
-         * @param bool $wrap Defined if generated guid needs to be wrapped by curly brackets
+         * @param bool $lowerCase Defines if generated guid will be in lower case.
+         * @param bool $wrap Defined if generated guid needs to be wrapped by curly brackets.
          */
         public function __construct($lowerCase = true, $wrap = false)
         {
@@ -65,8 +74,8 @@
         /**
          * Generates guid string
          *
-         * @param bool $lowerCase Defines if generated guid will be in lower case
-         * @param bool $wrap Defined if generated guid needs to be wrapped by curly brackets
+         * @param bool $lowerCase Defines if generated guid will be in lower case.
+         * @param bool $wrap Defined if generated guid needs to be wrapped by curly brackets.
          * @return string
          */
         static public function make($lowerCase = true, $wrap = false)
