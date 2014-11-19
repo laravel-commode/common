@@ -37,7 +37,7 @@
          */
         private function getResolver()
         {
-            return $this->app(ServiceShortCuts::RESOLVER_SERVICE);
+            return $this->app[ServiceShortCuts::RESOLVER_SERVICE];
         }
 
         /**
