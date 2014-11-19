@@ -46,7 +46,8 @@
          */
         public function launching()
         {
-            $this->app->alias('CommodeResolver', 'LaravelCommode\Common\Facades\Resolver');
+            $loader = AliasLoader::getInstance();
+            $loader->alias('CommodeResolver', 'LaravelCommode\Common\Facades\Resolver');
         }
 
         /**
