@@ -6,6 +6,10 @@
     use ReflectionFunction;
     use ReflectionParameter;
 
+    /**
+     * Class Resolver
+     * @package LaravelCommode\Common\Resolver
+     */
     class Resolver
     {
         /**
