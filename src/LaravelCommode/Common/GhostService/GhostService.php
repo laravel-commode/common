@@ -58,14 +58,22 @@
                 return $this;
             }
 
-            $this->with(ServiceShortCuts::GHOST_SERVICE, function(GhostServices $appServices) {
+            /**
+             * If CommodeCommonServiceProvider is not loaded yet, load it
+             * and mark as registered in GhostServices
+             */
+            if (!($bound = $this->app->bound(ServiceShortCuts::CORE_INITIALIZED)))
+            {
+                $this->services([CommodeCommonServiceProvider::class]);
+            }
+
+            $this->with(ServiceShortCuts::GHOST_SERVICE, function(GhostServices $appServices) use ($bound) {
                 /**
                  * If CommodeCommonServiceProvider is not loaded yet, load it
                  * and mark as registered in GhostServices
                  */
-                if (!$this->app->bound(ServiceShortCuts::CORE_INITIALIZED))
+                if (!$bound)
                 {
-                    $this->services([CommodeCommonServiceProvider::class]);
                     $appServices->register(CommodeCommonServiceProvider::class);
                 }
 
