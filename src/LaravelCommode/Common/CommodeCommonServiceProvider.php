@@ -26,9 +26,7 @@
          */
         public function provides()
         {
-            return [
-                ServiceShortCuts::GHOST_SERVICE, ServiceShortCuts::RESOLVER_SERVICE
-            ];
+            return [ServiceShortCuts::GHOST_SERVICE, ServiceShortCuts::RESOLVER_SERVICE];
         }
 
         /**
@@ -38,7 +36,7 @@
          */
         public function boot()
         {
-            $this->package('laravel-commode/common');
+            $this->package('laravel-commode/common', 'commode-common', __DIR__.'/../../');
         }
 
         /**

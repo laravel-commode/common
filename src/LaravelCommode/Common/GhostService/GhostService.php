@@ -86,6 +86,11 @@
                  * Register service proviers in laravel app
                  */
                 $this->services($services);
+
+                /**
+                 * Mark current service as registered
+                 */
+                $appServices->register(static::class);
             });
 
             return $this;
