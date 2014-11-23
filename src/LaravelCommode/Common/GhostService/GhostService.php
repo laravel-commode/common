@@ -1,9 +1,11 @@
 <?php namespace LaravelCommode\Common\GhostService;
 
-    use LaravelCommode\Common\CommodeCommonServiceProvider;
     use LaravelCommode\Common\Constants\ServiceShortCuts;
-    use LaravelCommode\Common\Resolver\Resolver;
     use LaravelCommode\Common\GhostService\GhostServices;
+    use LaravelCommode\Common\Resolver\Resolver;
+    use LaravelCommode\Common\CommodeCommonServiceProvider;
+
+    use Illuminate\Foundation\AliasLoader;
     use Illuminate\Support\ServiceProvider;
 
     /**
@@ -19,7 +21,7 @@
      */
     abstract class GhostService extends ServiceProvider
     {
-
+        protected $aliases = [];
         /**
          * Will be triggered when the app's 'booting' event is triggered
          */
@@ -127,6 +129,16 @@
              * Bind app's 'booting' event resolving and launching methods
              */
             $this->app->booting($this->getResolver()->makeClosure(function () {
+
+                if (count($this->aliases) > 0)
+                {
+                    $loader = AliasLoader::getInstance();
+                    foreach($this->aliases as $facadeName => $facadeClass)
+                    {
+                        $loader->alias($facadeName, $facadeClass);
+                    }
+                }
+
                 $this->launchClosure();
             }));
         }

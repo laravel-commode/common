@@ -19,6 +19,9 @@
      */
     class CommodeCommonServiceProvider extends GhostService
     {
+        protected $aliases = [
+            'CommodeResolver' => 'LaravelCommode\Common\Facades\Resolver'
+        ];
         /**
          * Get the services provided by the provider.
          *
@@ -44,8 +47,7 @@
          */
         public function launching()
         {
-            $loader = AliasLoader::getInstance();
-            $loader->alias('CommodeResolver', 'LaravelCommode\Common\Facades\Resolver');
+
         }
 
         /**
