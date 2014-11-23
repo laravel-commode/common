@@ -124,27 +124,32 @@
          */
         public function register()
         {
-            /**
-             * Prepare service
-             */
-            $this->prepareService();
 
-            /**
-             * Bind app's 'booting' event resolving, aliases and launching methods
-             */
-            $this->app->booting($this->getResolver()->makeClosure(function () {
+            if (CommodeCommonServiceProvider::class != static::class)
+            {
+                /**
+                 * Prepare service
+                 */
+                $this->prepareService();
 
-                if (count($this->aliases) > 0)
-                {
-                    $loader = AliasLoader::getInstance();
-                    foreach($this->aliases as $facadeName => $facadeClass)
+                /**
+                 * Bind app's 'booting' event resolving, aliases and launching methods
+                 */
+                $this->app->booting($this->getResolver()->makeClosure(function () {
+
+                    if (count($this->aliases) > 0)
                     {
-                        $loader->alias($facadeName, $facadeClass);
+                        $loader = AliasLoader::getInstance();
+                        foreach($this->aliases as $facadeName => $facadeClass)
+                        {
+                            $loader->alias($facadeName, $facadeClass);
+                        }
                     }
-                }
 
-                $this->launchClosure();
-            }));
+                    $this->launchClosure();
+                }));
+
+            }
 
             /**
              * Register service
