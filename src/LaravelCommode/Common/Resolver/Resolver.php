@@ -124,7 +124,7 @@
          */
         public function method($class, $method, $params = [], $forceScopeCalls = false)
         {
-            $reflectionClass = new \ReflectionClass(is_string($class) ? $this->laraApp[$class] : $class);
+            $reflectionClass = new \ReflectionClass(is_string($class) ? $this->laraApp->make($class) : $class);
 
             $reflectionMethod = $reflectionClass->getMethod($method);
 

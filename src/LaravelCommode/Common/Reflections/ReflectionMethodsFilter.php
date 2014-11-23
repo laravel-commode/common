@@ -27,7 +27,7 @@
 
             foreach($this->getMethods() as $method)
             {
-                if ($method->isPublic() && substr_count($method->getName(), $prefix))
+                if ($method->isPublic() && substr_count($method->getName(), $prefix, null, strlen($prefix)))
                 {
                     $names[] = $method->getName();
                 }

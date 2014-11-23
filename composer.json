@@ -13,7 +13,7 @@
         "illuminate/support": "4.2.*"
     },
     "require-dev": {
-        "phpdocumentor/phpdocumentor": "2.7.*"
+        "mockery/mockery": "dev-master"
     },
     "autoload": {
         "psr-0": {

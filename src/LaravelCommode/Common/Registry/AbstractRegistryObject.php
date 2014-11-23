@@ -19,7 +19,7 @@
          */
         public function __get($offset)
         {
-            return isset($this[$offset]) ? $this[$offset] : null;
+            return isset($this[$offset]) ? $this->offsetGet($offset) : null;
         }
 
         /**
