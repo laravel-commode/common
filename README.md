@@ -6,9 +6,18 @@ use only inside _laravel-commode_ and some of them might be useful for developme
 <br />
 ####Contents
 
++ <a href="#installing">Installing</a>
 + <a href="#service">GhostService</a>
 + <a href="#resolver">Resolver</a>
 + <a href="#controller">Controller</a>
+
+<hr />
+
+##<a name="service">Installing</a>
+
+
+
+<hr />
 
 ##<a name="service">GhostService</a>
 
