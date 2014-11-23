@@ -29,13 +29,13 @@
         /**
          * Will be triggered when the app's 'booting' event is triggered
          */
-        abstract public function launching();
+        abstract protected function launching();
 
 
         /**
          * Triggered when service is being registered
          */
-        abstract public function registering();
+        abstract protected function registering();
 
         /**
          * Returns application's Resolver instance
