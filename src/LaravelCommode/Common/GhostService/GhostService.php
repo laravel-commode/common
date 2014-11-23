@@ -21,6 +21,10 @@
      */
     abstract class GhostService extends ServiceProvider
     {
+        /**
+         * List of bound aliases
+         * @var array
+         */
         protected $aliases = [];
         /**
          * Will be triggered when the app's 'booting' event is triggered
@@ -121,12 +125,12 @@
         public function register()
         {
             /**
-             * Prepare service and run registering() method
+             * Prepare service
              */
-            $this->prepareService()->registering();
+            $this->prepareService();
 
             /**
-             * Bind app's 'booting' event resolving and launching methods
+             * Bind app's 'booting' event resolving, aliases and launching methods
              */
             $this->app->booting($this->getResolver()->makeClosure(function () {
 
@@ -141,6 +145,11 @@
 
                 $this->launchClosure();
             }));
+
+            /**
+             * Register service
+             */
+            $this->registering();
         }
 
         /**

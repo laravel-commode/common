@@ -1,6 +1,6 @@
 #Commode: Common
 
-**_laravel-commode/common_** is common utils/services package for all commode packages. Some of them are supposed to
+>**_laravel-commode/common_** is common utils/services package for all commode packages. Some of them are supposed to
 use only inside _laravel-commode_ and some of them might be useful for development.
 
 <br />
@@ -132,6 +132,14 @@ registered in IoC container or can be resolved in runtime:
                 });
             }
         }
+
+If your service provider needs to register a facade or list of facades, you can simply do it by overriding
+``protected $aliases = [];`` and assigning it an array where keys are facade names and values are bound
+facades' class names:
+
+        protected $aliases = [
+            'MyFacade' => \MyVendor\MyPackage\Facades\MyFacade::class
+        ];
 
 
 ## <a name="resolver">Resolver</a>
