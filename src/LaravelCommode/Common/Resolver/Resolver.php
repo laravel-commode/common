@@ -61,6 +61,8 @@
              */
             preg_match('/\[\s\<\w+?>\s([\w\\\\]+)/s', $parameter->__toString(), $matches);
 
+            if (count($matches) < 1) return false;
+
             /**
              * check if $parameter type is not array and can be treated as class/interface
              */
