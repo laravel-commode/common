@@ -178,10 +178,16 @@
 
         public function testUses()
         {
-            $register = ['Service1', 'Service2', 'Service3'];
-            $expectedResult = array_merge([CommodeCommonServiceProvider::class], $register);
+            $registered = [CommodeCommonServiceProvider::class, 'Service1', 'Service2', 'Service3'];
+            $additionals = ['Service4', 'Service5'];
+
+            $uses = array_merge($registered, $additionals);
+
+            $expectedResult = array_merge($registered, $additionals);
 
             $ghostServicesManager = new GhostServices();
+
+            $ghostServicesManager->registers($registered);
 
             $resolverAppMock = $this->buildAppMock();
 
@@ -189,11 +195,11 @@
 
             $appMock = $this->buildAppMock();
 
-            $appMock->shouldReceive('bound')->zeroOrMoreTimes()->andReturn(false, true);
+            $appMock->shouldReceive('bound')->zeroOrMoreTimes()->andReturn(true, true);
 
-            $appMock->shouldReceive('forceRegister')->times(4)->andReturnUsing(function($service) use ($expectedResult)
+            $appMock->shouldReceive('forceRegister')->twice()->andReturnUsing(function($service) use ($additionals)
             {
-                $this->assertTrue(in_array($service, $expectedResult));
+                $this->assertTrue(in_array($service, $additionals));
             });
 
             $appMock->shouldReceive('make')->twice()->andReturnUsing(function ($resolves) use ($ghostServicesManager, $resolver)
@@ -218,12 +224,11 @@
             $service = $this->buildGhostServiceMock($appMock);
 
             $service->expects($this->any())->method('uses')->will(
-                $this->returnValue($register)
+                $this->returnValue($uses)
             );
 
             $service->register();
 
-            $this->assertNotSameSize($ghostServicesManager->getRegistered(), $expectedResult);
             $this->assertSame(last($ghostServicesManager->getRegistered()), get_class($service));
         }
 
