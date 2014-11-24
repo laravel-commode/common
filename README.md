@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/laravel-commode/common.svg?branch=master)](https://travis-ci.org/laravel-commode/common)
+[![Code Climate](https://d3s6mut3hikguw.cloudfront.net/github/laravel-commode/common/badges/gpa.svg)](https://codeclimate.com/github/laravel-commode/common)
+[![Coverage](https://d3s6mut3hikguw.cloudfront.net/github/laravel-commode/common/badges/coverage.svg)](https://codeclimate.com/github/laravel-commode/common)
 
 #Commode: Common
 
