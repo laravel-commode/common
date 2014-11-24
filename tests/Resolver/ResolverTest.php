@@ -11,7 +11,7 @@
             return func_get_args();
         }
 
-        public function resolvingDummyFail($int, Dummy $dummy)
+        public function resolvingDummyFail($int, Dummy $dummy = null)
         {
             return func_get_args();
         }
@@ -130,23 +130,18 @@
 
             $appMock->shouldReceive('bound')->zeroOrMoreTimes()->andReturn(false);
 
-            $this->setExpectedException('Exception', $msg = 'Argument 2 passed to Resolver\ResolvingClass::resolvingDummyFail() must be an instance of Resolver\Dummy, none given');
 
-            try {
-                $result = $resolver->method($resolvedClass, 'resolvingDummyFail', $parameters, true);
-            } catch (\Exception $e) {
-                $this->assertSame(
-                    $e->getMessage(), $msg
-                );
-                throw $e;
-            }
+            $result = $resolver->method($resolvedClass, 'resolvingDummyFail', $parameters);
+
+            $this->assertSame($result, $parameters);
+
         }
 
         public function testUnableToResolveClosure()
         {
             $resolver = new Resolver($appMock = $this->getAppMock());
 
-            $resolvedClosure = function($int, Dummy $dummy)
+            $resolvedClosure = function($int, Dummy $dummy = null)
             {
                 return func_get_args();
             };
@@ -155,16 +150,9 @@
 
             $appMock->shouldReceive('bound')->zeroOrMoreTimes()->andReturn(false);
 
-            $this->setExpectedException('Exception', $msg = 'Argument 2 passed to Resolver\ResolverTest::Resolver\{closure}() must be an instance of Resolver\Dummy, none given');
+            $result = $resolver->closure($resolvedClosure, $parameters);
 
-            try {
-                $result = $resolver->closure($resolvedClosure, $parameters);
-            } catch (\Exception $e) {
-                $this->assertSame(
-                    $e->getMessage(), $msg
-                );
-                throw $e;
-            }
+            $this->assertSame($result, $parameters);
         }
 
         public function testResolverMethodInstanceScopeException()
