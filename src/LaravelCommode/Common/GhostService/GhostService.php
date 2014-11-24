@@ -59,7 +59,7 @@
              * Check if current provider instance is not CommodeCommonServiceProvider -
              * if it is CommodeCommonServiceProvider, abort loading dependent services
              */
-            if (CommodeCommonServiceProvider::class == static::class)
+            if ('LaravelCommode\Common\CommodeCommonServiceProvider' == get_class($this))
             {
                 return $this;
             }
@@ -70,7 +70,7 @@
              */
             if (!($bound = $this->app->bound(ServiceShortCuts::CORE_INITIALIZED)))
             {
-                $this->services([CommodeCommonServiceProvider::class]);
+                $this->services(['LaravelCommode\Common\CommodeCommonServiceProvider']);
             }
 
             $this->with(ServiceShortCuts::GHOST_SERVICE, function(GhostServices $appServices) use ($bound) {
@@ -80,7 +80,7 @@
                  */
                 if (!$bound)
                 {
-                    $appServices->register(CommodeCommonServiceProvider::class);
+                    $appServices->register('LaravelCommode\Common\CommodeCommonServiceProvider');
                 }
 
                 /**
@@ -96,7 +96,7 @@
                 /**
                  * Mark current service as registered
                  */
-                $appServices->register(static::class);
+                $appServices->register(get_class($this));
             });
 
             return $this;
@@ -125,7 +125,7 @@
         public function register()
         {
 
-            if (CommodeCommonServiceProvider::class != static::class)
+            if ('LaravelCommode\Common\CommodeCommonServiceProvider' != get_class($this))
             {
                 /**
                  * Prepare service
