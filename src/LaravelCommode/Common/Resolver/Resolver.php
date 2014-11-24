@@ -59,22 +59,20 @@
             /**
              * check if $parameter has type
              */
-            if (preg_match('/\[\s\<\w+?>\s([\w\\\\]+)/s', $parameter->__toString(), $matches))
-            {
-                /**
-                 * check if $parameter type is not array and can be treated as class/interface
-                 */
-                $canBeCreated = isset($matches[1]) && !$parameter->isArray() && is_string($matches[1]);
+            preg_match('/\[\s\<\w+?>\s([\w\\\\]+)/s', $parameter->__toString(), $matches);
 
-                /**
-                 * check if $parameter class/interface exists or it's been bound
-                 */
-                $existsOrBound = class_exists($matches[1]) || $this->laraApp->bound($matches[1]);
+            /**
+             * check if $parameter type is not array and can be treated as class/interface
+             */
+            $canBeCreated = isset($matches[1]) && !$parameter->isArray() && is_string($matches[1]);
 
-                return ($canBeCreated && $existsOrBound) ? $matches[1] : false;
-            }
+            /**
+             * check if $parameter class/interface exists or it's been bound
+             */
+            $existsOrBound = class_exists($matches[1]) || $this->laraApp->bound($matches[1]);
 
-            return false;
+            return ($canBeCreated && $existsOrBound) ? $matches[1] : false;
+
         }
 
         /**

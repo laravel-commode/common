@@ -43,6 +43,14 @@
             return \Mockery::mock('Illuminate\Foundation\Application');
         }
 
+        /**
+         * @covers LaravelCommode\Common\GhostService\GhostService::prepareService
+         * @covers LaravelCommode\Common\GhostService\GhostService::with
+         * @covers LaravelCommode\Common\GhostService\GhostService::services
+         * @covers LaravelCommode\Common\GhostService\GhostService::registering
+         * @covers LaravelCommode\Common\GhostService\GhostService::launching
+         * @covers LaravelCommode\Common\CommodeCommonServiceProvider::registering
+         */
         public function testRegistrationEmpty()
         {
             $ghostServicesManager = new GhostServices();

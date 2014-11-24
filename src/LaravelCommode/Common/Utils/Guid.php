@@ -80,26 +80,13 @@
          */
         static public function make($lowerCase = true, $wrap = false)
         {
-            if (function_exists('com_create_guid')){
-                $guid = com_create_guid();
+            $charid = strtoupper(md5(uniqid(rand(), true)));
+            $hyphen = chr(45);
+            $uuid = ($wrap ? "{" : "")
+                .substr($charid, 0, 8).$hyphen.substr($charid, 8, 4).$hyphen
+                .substr($charid,12, 4).$hyphen.substr($charid,16, 4).$hyphen
+                .substr($charid,20,12).($wrap ? "}" : "");
+            return $lowerCase ? strtolower($uuid) : $uuid;
 
-                if ($lowerCase) {
-                    $guid = mb_strtolower($guid);
-                }
-
-                if (!$wrap) {
-                    return str_replace(["{", "}"], "", com_create_guid());
-                }
-
-                return $guid;
-            } else {
-                $charid = strtoupper(md5(uniqid(rand(), true)));
-                $hyphen = chr(45);
-                $uuid = ($wrap ? "{" : "")
-                    .substr($charid, 0, 8).$hyphen.substr($charid, 8, 4).$hyphen
-                    .substr($charid,12, 4).$hyphen.substr($charid,16, 4).$hyphen
-                    .substr($charid,20,12).($wrap ? "}" : "");
-                return $lowerCase ? strtolower($uuid) : $uuid;
-            }
         }
     }
