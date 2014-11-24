@@ -141,9 +141,9 @@
             $expectedResolverParameters = array_merge($parameters, [$resolver]);
 
             $appMock->shouldReceive('bound')->zeroOrMoreTimes()->andReturn(true);
-            $appMock->shouldReceive('make')->times(2)->andReturn($resolvedClass, $resolver);
+            $appMock->shouldReceive('make')->times(1)->andReturn($resolver);
 
-            $resultClosure = $resolver->methodToClosure('Resolver\ResolvingClass', 'resolvingMethod');
+            $resultClosure = $resolver->methodToClosure($resolvedClass, 'resolvingMethod');
             $this->assertTrue($resultClosure instanceof Closure);
 
             $result = $resultClosure($parameters[0]);
