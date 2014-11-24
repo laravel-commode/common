@@ -1,8 +1,9 @@
+#Commode: Common
+
 [![Build Status](https://travis-ci.org/laravel-commode/common.svg?branch=master)](https://travis-ci.org/laravel-commode/common)
 [![Code Climate](https://d3s6mut3hikguw.cloudfront.net/github/laravel-commode/common/badges/gpa.svg)](https://codeclimate.com/github/laravel-commode/common)
 [![Coverage](https://d3s6mut3hikguw.cloudfront.net/github/laravel-commode/common/badges/coverage.svg)](https://codeclimate.com/github/laravel-commode/common)
 
-#Commode: Common
 
 >**_laravel-commode/common_** is common utils/services package for all commode packages. Some of them are supposed to
 use only inside _laravel-commode_ and some of them might be useful for development.
