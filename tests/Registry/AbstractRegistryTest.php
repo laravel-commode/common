@@ -74,7 +74,7 @@
             $mock['one'] = 5;
             $mock['two'] = 6;
 
-            $mock->reset();
+            $mock->rewind();
             $mock->next();
 
             $this->assertSame($mock->current(), 6);
