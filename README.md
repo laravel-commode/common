@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/laravel-commode/common.svg?branch=master)](https://travis-ci.org/laravel-commode/common)
+
 #Commode: Common
 
 >**_laravel-commode/common_** is common utils/services package for all commode packages. Some of them are supposed to
