@@ -17,7 +17,54 @@ use only inside _laravel-commode_ and some of them might be useful for developme
 
 ##<a name="service">Installing</a>
 
+You can install ___laravel-commode/common___ from composer:
 
+    composer require laravel-commode/common
+
+To enable package you need to register ``LaravelCommode\Common\CommodeCommonServiceProvider``. Actually, there
+are two ways of registering ``LaravelCommode\Common\CommodeCommonServiceProvider`` - first one is common for
+all service providers: you can simply add it into app's config providers list:
+
+    <?php
+        return [
+            // ... config code
+            'providers' => [
+                // ... providers
+                \LaravelCommode\Common\CommodeCommonServiceProvider::class
+            ]
+        ];
+
+Or you could register one of your GhostService providers, if you are going to use them, that would register
+``LaravelCommode\Common\CommodeCommonServiceProvider`` automatically. For example you might create a common
+service provider for your application and register it instead of registering ``CommodeCommonServiceProvider``.
+For e.g.:
+
+    <?php
+        return [
+            // ... config code
+            'providers' => [
+                // ... providers
+                \MyApp\ServiceProviders\ApplicationServiceProvider::class
+            ]
+        ];
+<br />
+
+    <?php namespace MyApp\ServiceProviders;
+
+        use LaravelCommode\Common\GhostService;
+
+        class ApplicationServiceProvider extends GhostService
+        {
+            /**
+            *   Will be triggered when the app is booting
+            **/
+            public function launching() { }
+
+            /**
+            *   Triggered when service is being registered
+            **/
+            public function registering() { }
+        }
 
 <hr />
 
