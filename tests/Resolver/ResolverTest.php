@@ -130,9 +130,16 @@
 
             $appMock->shouldReceive('bound')->zeroOrMoreTimes()->andReturn(false);
 
-            $this->setExpectedException('Exception', 'Argument 2 passed to Resolver\ResolvingClass::resolvingDummyFail() must be an instance of Resolver\Dummy, none given');
+            $this->setExpectedException('Exception', $msg = 'Argument 2 passed to Resolver\ResolvingClass::resolvingDummyFail() must be an instance of Resolver\Dummy, none given');
 
-            $result = $resolver->method($resolvedClass, 'resolvingDummyFail', $parameters, true);
+            try {
+                $result = $resolver->method($resolvedClass, 'resolvingDummyFail', $parameters, true);
+            } catch (\Exception $e) {
+                $this->assertSame(
+                    $e->getMessage(), $msg
+                );
+                throw $e;
+            }
         }
 
         public function testUnableToResolveClosure()
@@ -148,9 +155,16 @@
 
             $appMock->shouldReceive('bound')->zeroOrMoreTimes()->andReturn(false);
 
-            $this->setExpectedException('Exception', 'Argument 2 passed to Resolver\ResolverTest::Resolver\{closure}() must be an instance of Resolver\Dummy, none given');
+            $this->setExpectedException('Exception', $msg = 'Argument 2 passed to Resolver\ResolverTest::Resolver\{closure}() must be an instance of Resolver\Dummy, none given');
 
-            $result = $resolver->closure($resolvedClosure, $parameters);
+            try {
+                $result = $resolver->closure($resolvedClosure, $parameters);
+            } catch (\Exception $e) {
+                $this->assertSame(
+                    $e->getMessage(), $msg
+                );
+                throw $e;
+            }
         }
 
         public function testResolverMethodInstanceScopeException()
