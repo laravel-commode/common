@@ -63,7 +63,7 @@
 
             $service = $this->buildService($appMock);
 
-            $reflection = new \ReflectionClass(ServiceShortCuts::class);
+            $reflection = new \ReflectionClass('LaravelCommode\Common\Constants\ServiceShortCuts');
 
             $provided = $service->provides();
 

@@ -13,7 +13,7 @@
     {
         protected function buildARMock()
         {
-            $abstractRegistryMock = $this->getMockBuilder(AbstractRegistry::class)->getMockForAbstractClass();
+            $abstractRegistryMock = $this->getMockBuilder('LaravelCommode\Common\Registry\AbstractRegistry')->getMockForAbstractClass();
             $abstractRegistryMockExpectation = $abstractRegistryMock->expects($this->any());
 
             $abstractRegistryMockExpectation->method('getContainerName')->will(

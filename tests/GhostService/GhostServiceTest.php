@@ -20,7 +20,7 @@
          */
         protected  function buildGhostServiceMock($appMock)
         {
-            $mock = $this->getMockBuilder(GhostService::class)->setConstructorArgs(func_get_args())
+            $mock = $this->getMockBuilder('LaravelCommode\Common\GhostService\GhostService')->setConstructorArgs(func_get_args())
                          ->setMethods(['uses'])
                          ->getMockForAbstractClass();
 
@@ -136,7 +136,7 @@
         public function testUsesAllNew()
         {
             $register = ['Service1', 'Service2', 'Service3'];
-            $expectedResult = array_merge([CommodeCommonServiceProvider::class], $register);
+            $expectedResult = array_merge(['LaravelCommode\Common\CommodeCommonServiceProvider'], $register);
 
             $ghostServicesManager = new GhostServices();
 
@@ -186,7 +186,7 @@
 
         public function testUses()
         {
-            $registered = [CommodeCommonServiceProvider::class, 'Service1', 'Service2', 'Service3'];
+            $registered = ['LaravelCommode\Common\CommodeCommonServiceProvider', 'Service1', 'Service2', 'Service3'];
             $additionals = ['Service4', 'Service5'];
 
             $uses = array_merge($registered, $additionals);
