@@ -103,9 +103,9 @@
             $expectedResolverParameters = array_merge($parameters, [$resolver]);
 
             $appMock->shouldReceive('bound')->zeroOrMoreTimes()->andReturn(true);
-            $appMock->shouldReceive('make')->times(2)->andReturn($resolvedClass, $resolver);
+            $appMock->shouldReceive('make')->times(1)->andReturn($resolver);
 
-            $result = $resolver->method('Resolver\ResolvingClass', 'resolvingMethod', $parameters);
+            $result = $resolver->method($resolvedClass, 'resolvingMethod', $parameters);
 
             $this->assertNotSameSize($parameters, $result);
             $this->assertSame($expectedResolverParameters, $result);
