@@ -19,7 +19,7 @@ use only inside _laravel-commode_ and some of them might be useful for developme
 
 You can install ___laravel-commode/common___ from composer:
 
-    composer require laravel-commode/common
+    user@userpc:/path/to/app$ composer require laravel-commode/common
 
 To enable package you need to register ``LaravelCommode\Common\CommodeCommonServiceProvider``. Actually, there
 are two ways of registering ``LaravelCommode\Common\CommodeCommonServiceProvider`` - first one is common for
