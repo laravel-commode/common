@@ -169,10 +169,12 @@
             try {
                 $result = $resolver->method($resolvedClass, 'resolvingScope', $parameters);
             } catch(\Exception $e) {
-                $this->assertSame(
-                    'call_user_func_array() expects parameter 1 to be a valid callback, cannot access private method Resolver\ResolvingClass::resolvingScope()',
-                    $e->getMessage()
-                );
+                $this->assertTrue(
+                    in_array($e->getMessage(), [
+                        'call_user_func_array() expects parameter 1 to be a valid callback, cannot access private method Resolver\ResolvingClass::resolvingScope()',
+                        'Invalid argument: function: method \'resolvingScope\' not found'
+                    ]
+                ));
             }
         }
 
