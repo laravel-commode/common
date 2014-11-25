@@ -173,23 +173,6 @@
             $this->assertSame($expectedResolverParameters, $result);
         }
 
-        public function testResolverMethodString()
-        {
-            $resolver = new Resolver($appMock = $this->getAppMock());
-            $resolvedClass = new ResolvingClass();
-
-            $parameters = [1];
-            $expectedResolverParameters = array_merge($parameters, [$resolver]);
-
-            $appMock->shouldReceive('bound')->zeroOrMoreTimes()->andReturn(true);
-            $appMock->shouldReceive('make')->times(1)->andReturn($resolver);
-
-            $result = $resolver->method($resolvedClass, 'resolvingMethod', $parameters);
-
-            $this->assertNotSameSize($parameters, $result);
-            $this->assertSame($expectedResolverParameters, $result);
-        }
-
         public function testResolverMethodToClosureInstance()
         {
             $resolver = new Resolver($appMock = $this->getAppMock());
@@ -201,26 +184,6 @@
             $appMock->shouldReceive('bound')->zeroOrMoreTimes()->andReturn(true);
             $appMock->shouldReceive('make')->times(1)->andReturn($resolver);
 
-
-            $resultClosure = $resolver->methodToClosure($resolvedClass, 'resolvingMethod');
-            $this->assertTrue($resultClosure instanceof Closure);
-
-            $result = $resultClosure($parameters[0]);
-
-            $this->assertNotSameSize($parameters, $result);
-            $this->assertSame($expectedResolverParameters, $result);
-        }
-
-        public function testResolverMethodToClosureString()
-        {
-            $resolver = new Resolver($appMock = $this->getAppMock());
-            $resolvedClass = new ResolvingClass();
-
-            $parameters = [1];
-            $expectedResolverParameters = array_merge($parameters, [$resolver]);
-
-            $appMock->shouldReceive('bound')->zeroOrMoreTimes()->andReturn(true);
-            $appMock->shouldReceive('make')->times(1)->andReturn($resolver);
 
             $resultClosure = $resolver->methodToClosure($resolvedClass, 'resolvingMethod');
             $this->assertTrue($resultClosure instanceof Closure);
