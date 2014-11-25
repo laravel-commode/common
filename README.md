@@ -20,13 +20,16 @@ use only inside _laravel-commode_ and some of them might be useful for developme
 
 ##<a name="service">Installing</a>
 
-You can install ___laravel-commode/common___ from composer:
+You can install ___laravel-commode/common___ using composer:
 
-    $> composer require laravel-commode/common
+    "require": {
+        "laravel-commode/common": "dev-master"
+    }
 
-To enable package you need to register ``LaravelCommode\Common\CommodeCommonServiceProvider``. Actually, there
-are two ways of registering ``LaravelCommode\Common\CommodeCommonServiceProvider`` - first one is common for
-all service providers: you can simply add it into laravel application config providers list:
+
+To enable package you need to register ``LaravelCommode\Common\CommodeCommonServiceProvider`` service provider.
+Actually, there are two ways of registering ``CommodeCommonServiceProvider`` - first one is common for all
+service providers - you can simply add it into laravel application config providers list:
 
     <?php
         // ./yourLaravelApplication/app/config/app.php
@@ -34,24 +37,14 @@ all service providers: you can simply add it into laravel application config pro
             // ... config code
             'providers' => [
                 // ... providers
-                \LaravelCommode\Common\CommodeCommonServiceProvider::class
+                'LaravelCommode\Common\CommodeCommonServiceProvider'
             ]
         ];
 
-Or you could register one of your GhostService providers, if you are going to use them, that would register
-``LaravelCommode\Common\CommodeCommonServiceProvider`` automatically. For example you might create a common
-service provider for your application and register it instead of registering ``CommodeCommonServiceProvider``.
-For e.g.:
-
-    <?php
-        return [
-            // ... config code
-            'providers' => [
-                // ... providers
-                'MyApp\ServiceProviders\ApplicationServiceProvider'
-            ]
-        ];
-<br />
+Or you could start using _GhostService_ service providers and just implement one, because every _GhostService_
+service provider checks if ``CommodeCommonServiceProvider`` was registered, if it was not _GhostService_
+registers it automatically. For example it could be your central application service provider, that would load
+dependent service providers:
 
     <?php namespace MyApp\ServiceProviders;
 
@@ -59,25 +52,44 @@ For e.g.:
 
         class ApplicationServiceProvider extends GhostService
         {
-            /**
-            *   Will be triggered when the app is booting
-            **/
-            public function launching() { }
 
-            /**
-            *   Triggered when service is being registered
-            **/
-            public function registering() { }
+            // your ghost service code
+
+
+            public function uses()
+            {
+                return [
+                    'MyApp\ServiceProviders\DomainLogicServiceProvider', // your domain logic service provider,
+                    'MyApp\ServiceProviders\DALServiceProvider', // your data access layer service provider,
+                    // ... e.t.c.
+                ];
+            }
         }
+
+And later in your config you could simply add only ``ApplicationServiceProvider`` without any mention of
+`CommodeCommonServiceProvider`, `DomainLogicServiceProvider` and others...:
+
+    <?php
+        // ./yourLaravelApplication/app/config/app.php
+        return [
+            // ... config code
+            'providers' => [
+                // ... providers,
+                /**
+                /* will load all dependent services returned from uses()
+                /* method and CommodeCommonServiceProvider as well
+                **/
+                'MyApp\ServiceProviders\ApplicationServiceProvider'
+            ]
+        ];
 
 <hr />
 
 ##<a name="service">GhostService</a>
 
-__GhostService__ is a wrapper for <code>Illuminate\Support\ServiceProvider</code> with some useful features.
-To create a ghost service you simply need to extend <code>LaravelCommode\Common\GhostService</code> class
-and implement 2 methods: <code>LaravelCommode\Common\GhostService:registering()</code> and
-<code>LaravelCommode\Common\GhostService::launching()</code>.<br /><br />
+__GhostService__ is a descendant of an ``Illuminate\Support\ServiceProvider`` with some useful features.
+To create a ghost service you simply need to extend ``LaravelCommode\Common\GhostService`` class
+and implement 2 basic protected methods: ``registering()`` and ``launching()``.
 
     <?php namespace MyApp\ServiceProviders;
 
@@ -88,20 +100,20 @@ and implement 2 methods: <code>LaravelCommode\Common\GhostService:registering()<
             /**
             *   Will be triggered when the app is booting
             **/
-            public function launching() { }
+            protected function launching() { }
 
             /**
             *   Triggered when service is being registered
             **/
-            public function registering() { }
+            protected function registering() { }
         }
 
-<br />
-_GhostService_ can load dependent service providers. It might be useful when your main app config file is a
-large headache of when you are developing custom package and you don't want to abuse next developer/user
-with implementation of dependent service providers. For service automatic loading you can override method
-<code>LaravelCommode\Common\GhostService::uses()</code> that must return array of service providers. If dependent
-service has been loaded it won't be loaded again.
+
+One of the most useful features of _GhostService_ is that it load dependent service providers. It might be
+useful when your main app config file is a large headache of when you are developing custom package and you \
+don't want to abuse next developer/user with implementation of dependent service providers. For service
+automatic loading you can override method ``public function uses()`` that must return array of service
+providers' names. If dependent service has been loaded it will ignored in loading chain.
 
     <?php namespace MyApp\ServiceProviders;
 
@@ -112,26 +124,27 @@ service has been loaded it won't be loaded again.
             public function uses()
             {
                 return [
+                    'MyApp\ServiceProviders\DALServiceProvider',
                     'Illuminate\Hashing\HashServiceProvider',
-                    Vendor\Package\UsefulServiceProvider::class // <- comfortable refactoring
+                    'Vendor\Package\UsefulServiceProvider'
                 ];
             }
 
             /**
             *   Will be triggered when the app is booting
             **/
-            public function launching() { }
+            protected function launching() { }
 
             /**
             *   Triggered when service is being registered
             **/
-            public function registering() { }
+            protected function registering() { }
         }
 
 For those laravel users, who brought a lot of critics into 'Facades in Laravel' topic _GhostService_ providers
-resolving method <code>LaravelCommode\Common\GhostService::with($resolvable, callable $do)</code>. Method expects
-<code>$resolvable</code> argument to be string or array of strings, that would contain binding that are already
-registered in IoC container or can be resolved in runtime:
+resolving method ``protected function with($resolvable, callable $do)``. Method expects ``$resolvable`` argument
+to be ``string`` or ``array`` of strings, that would contain bindings that are already registered in IoC
+container or can be resolved in runtime and ``$do`` argument to be ``callable``:
 
     <?php namespace MyApp\ServiceProviders;
 
@@ -147,18 +160,16 @@ registered in IoC container or can be resolved in runtime:
             public function uses()
             {
                 return [
+                    'MyApp\ServiceProviders\DALServiceProvider',
                     'Illuminate\Hashing\HashServiceProvider',
-                    Vendor\UsefulPackage\UsefulServiceProvider::class // <- comfortable refactoring
+                    'Vendor\Package\UsefulServiceProvider'
                 ];
             }
 
             /**
             *   Will be triggered when the app is booting
             **/
-            public function launching()
-            {
-
-            }
+            protected function launching() { }
 
             private function doSomethingWithHash(\Illuminate\Hashing\BcryptHasher $hash)
             {
@@ -173,14 +184,14 @@ registered in IoC container or can be resolved in runtime:
             /**
             *   Triggered when service is being registered
             **/
-            public function registering()
+            protected function registering()
             {
                 $usings = ['hash', \Vendor\UsefulPackage\IUsefulBoundInterface::class, 'view'];
 
                 $this->with($usings, function ($hash, $useful, $view)
                 {
                     $this->doSomethingWithHash($hash);
-                    $this->doSomethingWithUseul($useful);
+                    $this->doSomethingWithUseful($useful);
                     $this->viewFactory = $view;
                 });
             }
@@ -198,8 +209,9 @@ facades' class names:
 ## <a name="resolver">Resolver</a>
 
 Resolver is a small, but useful class for building something flexible or for something that requires resolving.
-Can be instantiated as <code>new \LaravelCommode\Common\Resolver\Resolver()</code> or can be grabbed from
-application IoC container <code>app('commode.resolver')</code>.
+It is available through ``CommodeResolver`` facade, or - if you are a facade hater you can find it registered in
+IoC container through alias "commode.common.resolver" or can initialize new instance as
+``new \LaravelCommode\Common\Resolver\Resolver($laravelApplication)`` .
 
 For example, let's say that you have some structure for your security module like ISecurityUser and it's bound
 to your configured eloquent auth model.
@@ -241,7 +253,7 @@ to your configured eloquent auth model.
             }
         }
 
-<code>Resolver</code> can resolve closures and class methods or turn them into resolvable closures. Here's an example
+``Resolver`` can resolve closures and class methods or turn them into resolvable closures. Here's an example
 of using it.
 
 ###Resolver and closures:
@@ -327,15 +339,15 @@ of using it.
 
 ## <a name="#controller">Controller</a>
 
-_laravel-commode/common_ provides simple controller that doesn't change default controller that much, but it provides
-functionality that often being questioned on StackOverflow and resources like that on Laravel 4.0-4.2.
+__laravel-commode/common__ provides simple controller that doesn't change default controller that much, but it
+provides functionality that often being questioned on StackOverflow and resources like that on Laravel 4.0-4.2.
 
-<code>LaravelCommode\Common\Controllers\CommodeController</code> provides resolvable method calls and can separate ajax
+``LaravelCommode\Common\Controllers\CommodeController`` provides resolvable method calls, can separate ajax
 calls into different methods or disallow ajax calls at all.
 
-Methods resolver is enabled by default, but you can disable is by overriding <code>protected $resolveMethods</code>
-and setting it to <code>protected $resolveMethods = false;</code>. This functionality is extremely useful with
-__laravel-commode/viewmodel__ package installed. Example:
+Methods resolver is enabled by default, but you can disable it by overriding ``protected $resolveMethods``
+and setting it to ``protected $resolveMethods = false;``. This functionality is extremely useful with
+___laravel-commode/viewmodel___ package installed. Example:
 
     <?php namespace MyApp\Domain\Areas\Administrator\Controllers;
 
@@ -373,9 +385,9 @@ __laravel-commode/viewmodel__ package installed. Example:
             }
         }
 
-Ajax separation calls are disable by default, but you can enable it by overriding
-<code>protected $separateRequests</code> and setting it to <code>protected $separateRequests = true;</code>. To
-define an ajax method simply adding 'ajax_' prefix to your method name. Example:
+Ajax separation calls are disabled by default, but you can enable it by overriding
+``protected $separateRequests`` and setting it to ``protected $separateRequests = true;``. To define an ajax
+method simply adding 'ajax_' prefix to your method name. Example:
 
     <?php namespace MyApp\Domain\Areas\Site\Controllers;
 
@@ -401,11 +413,11 @@ define an ajax method simply adding 'ajax_' prefix to your method name. Example:
             **/
             public function getLatest()
             {
-                return \View::make('Site::posts.latest', [
+                return \View::make('Site::posts.list', [
                     'posts' => $this->ajax_getLatest()
                 ]);
             }
         }
 
-You can disallow ajax calls by overriding <code>protected $allowAjax</code>and  setting it to
-<code>protected $allowAjax = false;</code>.
+You can disallow ajax calls by overriding ``protected $allowAjax`` and  setting it to
+``protected $allowAjax = false;`` - would return  404 http status code.
