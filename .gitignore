@@ -1,5 +1,6 @@
 /vendor
 /doc
+/build
 composer.phar
 composer.lock
 .DS_Store
