@@ -34,6 +34,16 @@
             M::close();
         }
 
+        protected function buildForMethodResolving()
+        {
+            $resolver = new Resolver($appMock = $this->getAppMock());
+
+            $appMock->shouldReceive('bound')->zeroOrMoreTimes()->andReturn(true);
+            $appMock->shouldReceive('make')->times(1)->andReturn($resolver);
+
+            return $resolver;
+        }
+
         public function testResolverClosure()
         {
             $appMock = $this->getAppMock();
@@ -88,14 +98,11 @@
 
         public function testResolverMethodInstance()
         {
-            $resolver = new Resolver($appMock = $this->getAppMock());
+            $resolver = $this->buildForMethodResolving();
             $resolvedClass = new ResolvingClass();
 
             $parameters = [1];
             $expectedResolverParameters = array_merge($parameters, [$resolver]);
-
-            $appMock->shouldReceive('bound')->zeroOrMoreTimes()->andReturn(true);
-            $appMock->shouldReceive('make')->times(1)->andReturn($resolver);
 
             $result = $resolver->method($resolvedClass, 'resolvingMethod', $parameters);
 
@@ -105,15 +112,11 @@
 
         public function testResolverMethodInstanceScope()
         {
-            $resolver = new Resolver($appMock = $this->getAppMock());
+            $resolver = $this->buildForMethodResolving();
             $resolvedClass = new ResolvingClass();
 
-            $parameters = [1];
+            $parameters = ['some value'];
             $expectedResolverParameters = array_merge($parameters, [$resolver]);
-
-            $appMock->shouldReceive('bound')->zeroOrMoreTimes()->andReturn(true);
-            $appMock->shouldReceive('make')->times(1)->andReturn($resolver);
-
 
             $result = $resolver->method($resolvedClass, 'resolvingScope', $parameters, true);
 
@@ -157,20 +160,20 @@
 
         public function testResolverMethodInstanceScopeException()
         {
-            $resolver = new Resolver($appMock = $this->getAppMock());
+            $resolver = $this->buildForMethodResolving();
             $resolvedClass = new ResolvingClass();
 
             $parameters = [1];
             $expectedResolverParameters = array_merge($parameters, [$resolver]);
 
-            $appMock->shouldReceive('bound')->zeroOrMoreTimes()->andReturn(true);
-            $appMock->shouldReceive('make')->times(1)->andReturn($resolver);
-
-
-            $result = $resolver->method($resolvedClass, 'resolvingScope', $parameters, true);
-
-            $this->assertNotSameSize($parameters, $result);
-            $this->assertSame($expectedResolverParameters, $result);
+            try {
+                $result = $resolver->method($resolvedClass, 'resolvingScope', $parameters);
+            } catch(\Exception $e) {
+                $this->assertSame(
+                    'call_user_func_array() expects parameter 1 to be a valid callback, cannot access private method Resolver\ResolvingClass::resolvingScope()',
+                    $e->getMessage()
+                );
+            }
         }
 
         public function testResolverMethodToClosureInstance()
