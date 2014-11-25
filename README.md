@@ -26,7 +26,6 @@ You can install ___laravel-commode/common___ using composer:
         "laravel-commode/common": "dev-master"
     }
 
-
 To enable package you need to register ``LaravelCommode\Common\CommodeCommonServiceProvider`` service provider.
 Actually, there are two ways of registering ``CommodeCommonServiceProvider`` - first one is common for all
 service providers - you can simply add it into laravel application config providers list:
@@ -211,7 +210,7 @@ facades' class names:
 Resolver is a small, but useful class for building something flexible or for something that requires resolving.
 It is available through ``CommodeResolver`` facade, or - if you are a facade hater you can find it registered in
 IoC container through alias "commode.common.resolver" or can initialize new instance as
-``new \LaravelCommode\Common\Resolver\Resolver($laravelApplication)`` .
+``new \LaravelCommode\Common\Resolver\Resolver($laravelApplication)``.
 
 For example, let's say that you have some structure for your security module like ISecurityUser and it's bound
 to your configured eloquent auth model.
