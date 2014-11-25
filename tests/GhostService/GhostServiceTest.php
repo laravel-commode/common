@@ -20,17 +20,13 @@
          */
         protected  function buildGhostServiceMock($appMock)
         {
-            $mock = $this->getMockBuilder('LaravelCommode\Common\GhostService\GhostService')->setConstructorArgs(func_get_args())
+            $mock = $this->getMockBuilder('LaravelCommode\Common\GhostService\GhostService')
+                         ->setConstructorArgs(func_get_args())
                          ->setMethods(['uses'])
                          ->getMockForAbstractClass();
 
-            $mock->expects($this->any())->method('launching')->will(
-                $this->returnValue(null)
-            );
-
-            $mock->expects($this->any())->method('registering')->will(
-                $this->returnValue(null)
-            );
+            $mock->expects($this->any())->method('launching')->will($this->returnValue(null));
+            $mock->expects($this->any())->method('registering')->will($this->returnValue(null));
 
             return $mock;
         }
@@ -43,15 +39,7 @@
             return \Mockery::mock('Illuminate\Foundation\Application');
         }
 
-        /**
-         * @covers LaravelCommode\Common\GhostService\GhostService::prepareService
-         * @covers LaravelCommode\Common\GhostService\GhostService::with
-         * @covers LaravelCommode\Common\GhostService\GhostService::services
-         * @covers LaravelCommode\Common\GhostService\GhostService::registering
-         * @covers LaravelCommode\Common\GhostService\GhostService::launching
-         * @covers LaravelCommode\Common\CommodeCommonServiceProvider::registering
-         */
-        public function testRegistrationEmpty()
+        protected function buildAppMockForUseTest()
         {
             $ghostServicesManager = new GhostServices();
 
@@ -60,9 +48,6 @@
             $resolver = new Resolver($resolverAppMock);
 
             $appMock = $this->buildAppMock();
-
-            $appMock->shouldReceive('bound')->once()->andReturn(false);
-            $appMock->shouldReceive('forceRegister')->once();
 
             $appMock->shouldReceive('make')->twice()->andReturnUsing(function ($resolves) use ($ghostServicesManager, $resolver)
             {
@@ -79,6 +64,23 @@
 
             $appMock->shouldReceive('booting')->once();
 
+            return $appMock;
+        }
+
+        /**
+         * @covers LaravelCommode\Common\GhostService\GhostService::prepareService
+         * @covers LaravelCommode\Common\GhostService\GhostService::with
+         * @covers LaravelCommode\Common\GhostService\GhostService::services
+         * @covers LaravelCommode\Common\GhostService\GhostService::registering
+         * @covers LaravelCommode\Common\GhostService\GhostService::launching
+         * @covers LaravelCommode\Common\CommodeCommonServiceProvider::registering
+         */
+        public function testRegistrationEmpty()
+        {
+            $appMock = $this->buildAppMockForUseTest();
+            $appMock->shouldReceive('bound')->once()->andReturn(false);
+
+            $appMock->shouldReceive('forceRegister')->once();
 
             /**
              * @var \PHPUnit_Framework_MockObject_MockObject|GhostService $service
@@ -94,41 +96,16 @@
 
         public function testRegistration()
         {
-            $ghostServicesManager = new GhostServices();
+            $appMock = $this->buildAppMockForUseTest();
 
-            $resolverAppMock = $this->buildAppMock();
-
-            $resolver = new Resolver($resolverAppMock);
-
-            $appMock = $this->buildAppMock();
-
-            $appMock->shouldReceive('bound')->zeroOrMoreTimes()->andReturn(true, true);
-            $appMock->shouldReceive('forceRegister')->never();
-
-            $appMock->shouldReceive('make')->twice()->andReturnUsing(function ($resolves) use ($ghostServicesManager, $resolver)
-            {
-                switch($resolves)
-                {
-                    case ServiceShortCuts::GHOST_SERVICE:
-                        $this->assertSame($resolves, ServiceShortCuts::GHOST_SERVICE);
-                        return $ghostServicesManager;
-                    case ServiceShortCuts::RESOLVER_SERVICE:
-                        $this->assertSame($resolves, ServiceShortCuts::RESOLVER_SERVICE);
-                        return $resolver;
-                }
-            });
-
-            $appMock->shouldReceive('booting')->once();
-
+            $appMock->shouldReceive('bound')->once()->andReturn(true);
 
             /**
              * @var \PHPUnit_Framework_MockObject_MockObject|GhostService $service
              */
             $service = $this->buildGhostServiceMock($appMock);
 
-            $service->expects($this->any())->method('uses')->will(
-                $this->returnValue([])
-            );
+            $service->expects($this->any())->method('uses')->will($this->returnValue([]));
 
             $service->register();
         }
