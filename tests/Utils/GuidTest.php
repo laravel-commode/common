@@ -9,9 +9,6 @@
  */
     class GuidTest extends \PHPUnit_Framework_TestCase
     {
-        /**
-         * @covers \LaravelCommode\Common\Utils\Guid::make
-         */
         public function testGuidStaticMake()
         {
             $string = Guid::make(true);
@@ -28,9 +25,7 @@
             $this->assertStringEndsNotWith('}', $string);
             $this->assertStringStartsNotWith('{', $string);
         }
-        /**
-         * @covers \LaravelCommode\Common\Utils\Guid::__construct
-         */
+
         public function testGuid__construct()
         {
             $string = new Guid(true);
@@ -48,18 +43,12 @@
             $this->assertStringStartsNotWith('{', $string->__toString());
         }
 
-        /**
-         * @covers \LaravelCommode\Common\Utils\Guid::get
-         */
         public function testGuidGet()
         {
             $guid = new Guid();
             $this->assertSame($guid->get(), $guid->__toString());
         }
 
-        /**
-         * @covers \LaravelCommode\Common\Utils\Guid::__toString
-         */
         public function testGuidToString()
         {
             $guid = new Guid();
@@ -67,9 +56,6 @@
             $this->assertSame($guid->get(), $guid."");
         }
 
-        /**
-         * @covers \LaravelCommode\Common\Utils\Guid::regenerate
-         */
         public function testRegenerate()
         {
             $guid = new Guid();
@@ -77,4 +63,4 @@
             $guid->regenerate();
             $this->assertNotSame($oldValue, $guid->get());
         }
-    } 
+    }
