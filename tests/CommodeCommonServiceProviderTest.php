@@ -42,6 +42,7 @@
             $appMock = $this->buildAppMock();
             $appMock->shouldReceive('bindShared')->twice();
             $appMock->shouldReceive('bind')->once();
+            $appMock->shouldReceive('booting')->once();
 
             $service = $this->buildService($appMock);
 

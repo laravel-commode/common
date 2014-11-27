@@ -1,5 +1,4 @@
-<?php
-    namespace LaravelCommode\Common;
+<?php namespace LaravelCommode\Common;
 
     use Illuminate\Foundation\AliasLoader;
     use LaravelCommode\Common\Constants\ServiceShortCuts;
@@ -45,10 +44,7 @@
         /**
          * Will be triggered when the app's 'booting' event is triggered
          */
-        public function launching()
-        {
-
-        }
+        public function launching() { }
 
         /**
          * Triggered when service is being registered
@@ -66,5 +62,15 @@
             });
 
             $this->app->bind(ServiceShortCuts::CORE_INITIALIZED, true);
+
+            $this->app->booting(function ()
+            {
+                $loader = AliasLoader::getInstance();
+
+                foreach($this->aliases as $facade => $facadeClass)
+                {
+                    $loader->alias($facade, $facadeClass);
+                }
+            });
         }
     }
