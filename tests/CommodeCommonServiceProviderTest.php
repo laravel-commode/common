@@ -1,7 +1,7 @@
 <?php
-    namespace LaravelCommode\Common;
 
     use Illuminate\Foundation\AliasLoader;
+    use LaravelCommode\Common\CommodeCommonServiceProvider;
     use LaravelCommode\Common\Constants\ServiceShortCuts;
     use LaravelCommode\Common\GhostService\GhostService;
     use LaravelCommode\Common\GhostService\GhostServices;
@@ -40,9 +40,30 @@
         public function testRegistering()
         {
             $appMock = $this->buildAppMock();
-            $appMock->shouldReceive('bindShared')->twice();
+
+            $appMock->shouldReceive('bindShared')->times(1)->with(
+                ServiceShortCuts::RESOLVER_SERVICE, \Mockery::on(function ($closure) {
+                    $this->assertTrue($callable = is_callable($closure));
+                    $this->assertTrue($resolver = ($closure() instanceof Resolver));
+                    return $closure && $resolver;
+                })
+            );
+
+            $appMock->shouldReceive('bindShared')->times(1)->with(
+                ServiceShortCuts::GHOST_SERVICE, \Mockery::on(function ($closure) {
+                    $this->assertTrue($callable = is_callable($closure));
+                    $this->assertTrue($ghostServices = ($closure() instanceof GhostServices));
+                    return $closure && $ghostServices;
+                })
+            );
+
             $appMock->shouldReceive('bind')->once();
-            $appMock->shouldReceive('booting')->once();
+
+            $appMock->shouldReceive('booting')->once()->with(\Mockery::on(function ($booting)
+            {
+                $this->assertTrue(is_callable($booting));
+                return is_callable($booting);
+            }));
 
             $service = $this->buildService($appMock);
 
@@ -56,6 +77,20 @@
             $service = $this->buildService($appMock);
 
             $this->assertNull($service->launching());
+        }
+
+        public function testBoot()
+        {
+            $appMock = $this->buildAppMock();
+
+            $serviceMock = $this->getMockBuilder('LaravelCommode\Common\CommodeCommonServiceProvider')
+                                ->setConstructorArgs([$appMock])
+                                ->setMethods(['package'])
+                                ->getMock();
+
+            $serviceMock->expects($this->once())->method('package');
+
+            $serviceMock->boot();
         }
 
         public function testProvides()

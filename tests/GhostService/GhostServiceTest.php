@@ -18,12 +18,13 @@
          * @param $appMock
          * @return \PHPUnit_Framework_MockObject_MockObject
          */
-        protected  function buildGhostServiceMock($appMock)
+        protected  function buildGhostServiceMock($appMock,$setMethods = ['uses', 'resolving'])
         {
             $mock = $this->getMockBuilder('LaravelCommode\Common\GhostService\GhostService')
                          ->setConstructorArgs(func_get_args())
-                         ->setMethods(['uses'])
-                         ->getMockForAbstractClass();
+                         ->setMethods($setMethods);
+
+            $mock = $mock->getMockForAbstractClass();
 
             $mock->expects($this->any())->method('launching')->will($this->returnValue(null));
             $mock->expects($this->any())->method('registering')->will($this->returnValue(null));
@@ -39,7 +40,7 @@
             return \Mockery::mock('Illuminate\Foundation\Application');
         }
 
-        protected function buildAppMockForUseTest()
+        protected function buildAppMockForUseTest($withBinds = true)
         {
             $ghostServicesManager = new GhostServices();
 
@@ -49,20 +50,25 @@
 
             $appMock = $this->buildAppMock();
 
-            $appMock->shouldReceive('make')->twice()->andReturnUsing(function ($resolves) use ($ghostServicesManager, $resolver)
+            if ($withBinds)
             {
-                switch($resolves)
-                {
-                    case ServiceShortCuts::GHOST_SERVICE:
-                        $this->assertSame($resolves, ServiceShortCuts::GHOST_SERVICE);
-                        return $ghostServicesManager;
-                    case ServiceShortCuts::RESOLVER_SERVICE:
-                        $this->assertSame($resolves, ServiceShortCuts::RESOLVER_SERVICE);
-                        return $resolver;
-                }
-            });
 
-            $appMock->shouldReceive('booting')->once();
+                $appMock->shouldReceive('make')->twice()->andReturnUsing(function ($resolves) use ($ghostServicesManager, $resolver)
+                {
+                    switch($resolves)
+                    {
+                        case ServiceShortCuts::GHOST_SERVICE:
+                            $this->assertSame($resolves, ServiceShortCuts::GHOST_SERVICE);
+                            return $ghostServicesManager;
+                        case ServiceShortCuts::RESOLVER_SERVICE:
+                            $this->assertSame($resolves, ServiceShortCuts::RESOLVER_SERVICE);
+                            return $resolver;
+                    }
+                });
+
+                $appMock->shouldReceive('booting')->once();
+            }
+
 
             return $appMock;
         }
@@ -215,6 +221,24 @@
             $service->register();
 
             $this->assertSame(last($ghostServicesManager->getRegistered()), get_class($service));
+        }
+
+        public function testEmptyUsesResolving()
+        {
+            $appMock = $this->buildAppMockForUseTest(false);
+
+            $service = $this->buildGhostServiceMock($appMock, []);
+
+            $reflection = new \ReflectionClass($service);
+
+            $method = $reflection->getMethod('uses');
+            $method->setAccessible(true);
+            $this->assertCount(0, $method->invoke($service));
+
+            $method = $reflection->getMethod('resolving');
+            $method->setAccessible(true);
+            $this->assertCount(0, $method->invoke($service));
+
         }
 
         public function tearDown()
