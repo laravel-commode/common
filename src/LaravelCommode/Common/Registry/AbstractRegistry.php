@@ -2,6 +2,7 @@
         
     use ArrayAccess;
     use Countable;
+    use Illuminate\Contracts\Support\Arrayable;
     use Iterator;
 
     use Illuminate\Support\Contracts\ArrayableInterface;
@@ -19,7 +20,7 @@
      * @author Volynov Andrey
      * @package LaravelCommode\Common\Registry
      */
-    abstract class AbstractRegistry implements ArrayAccess, Iterator, Countable, ArrayableInterface
+    abstract class AbstractRegistry implements ArrayAccess, Iterator, Countable, Arrayable
     {
         /**
          * Returns name of protected/public property that should be used as container

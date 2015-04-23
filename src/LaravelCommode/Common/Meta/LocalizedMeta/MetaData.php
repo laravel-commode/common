@@ -17,7 +17,7 @@
         /**
          * @var string
          */
-        private $lookUpLocation = 'validation/attributes';
+        private $lookUpLocation = 'validation.attributes';
 
         public function __construct($locale = '_', $lookUpLocation = 'validation/attributes')
         {
