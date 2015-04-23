@@ -5,8 +5,6 @@
     use Illuminate\Contracts\Support\Arrayable;
     use Iterator;
 
-    use Illuminate\Support\Contracts\ArrayableInterface;
-
     /**
      * Class AbstractRegistry
      *
