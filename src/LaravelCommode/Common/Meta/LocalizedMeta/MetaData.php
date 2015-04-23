@@ -19,7 +19,7 @@
          */
         private $lookUpLocation = 'validation.attributes';
 
-        public function __construct($locale = '_', $lookUpLocation = 'validation/attributes')
+        public function __construct($locale = '_', $lookUpLocation = 'validation.attributes')
         {
             $this->setLocale($locale === '_' ? \App::getLocale() : $locale);
             $this->setLookUpLocation($lookUpLocation);
