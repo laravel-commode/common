@@ -20,7 +20,6 @@
      */
     abstract class AbstractRegistry implements ArrayAccess, Iterator, Countable, Arrayable
     {
-
         /**
          * Returns name of protected/public property that should be used as container
          * @return string Container property name
