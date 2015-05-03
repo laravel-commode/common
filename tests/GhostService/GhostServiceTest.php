@@ -86,6 +86,7 @@
             $appMock = $this->buildAppMockForUseTest();
             $appMock->shouldReceive('bound')->once()->andReturn(false);
 
+            $appMock->shouldReceive('getLoadedProviders')->zeroOrMoreTimes()->andReturn([]);
             $appMock->shouldReceive('forceRegister')->once();
 
             /**
@@ -105,6 +106,7 @@
             $appMock = $this->buildAppMockForUseTest();
 
             $appMock->shouldReceive('bound')->once()->andReturn(true);
+            $appMock->shouldReceive('getLoadedProviders')->zeroOrMoreTimes()->andReturn([]);
 
             /**
              * @var \PHPUnit_Framework_MockObject_MockObject|GhostService $service
@@ -128,6 +130,7 @@
             $resolver = new Resolver($resolverAppMock);
 
             $appMock = $this->buildAppMock();
+            $appMock->shouldReceive('getLoadedProviders')->zeroOrMoreTimes()->andReturn([]);
 
             $appMock->shouldReceive('bound')->zeroOrMoreTimes()->andReturn(false, true);
 
@@ -185,6 +188,8 @@
             $resolver = new Resolver($resolverAppMock);
 
             $appMock = $this->buildAppMock();
+
+            $appMock->shouldReceive('getLoadedProviders')->zeroOrMoreTimes()->andReturn([]);
 
             $appMock->shouldReceive('bound')->zeroOrMoreTimes()->andReturn(true, true);
 

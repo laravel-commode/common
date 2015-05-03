@@ -90,8 +90,9 @@
 
                 /**
                  * Register service proviers in laravel app
+                 * differing from already used ones
                  */
-                $this->services($services);
+                $this->services(array_diff($services, array_keys($this->app->getLoadedProviders())));
 
                 /**
                  * Mark current service as registered
@@ -223,6 +224,7 @@
         {
             foreach($services as $service)
             {
+
                 $this->app->forceRegister($service, []);
             }
         }
