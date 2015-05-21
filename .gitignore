@@ -2,6 +2,7 @@
 /doc
 /build
 /.idea
+/tests1
 composer.phar
 composer.lock
 .DS_Store

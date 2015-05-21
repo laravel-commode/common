@@ -386,7 +386,7 @@ ___laravel-commode/viewmodel___ package installed. Example:
 
 Ajax separation calls are disabled by default, but you can enable it by overriding
 ``protected $separateRequests`` and setting it to ``protected $separateRequests = true;``. To define an ajax
-method simply adding 'ajax_' prefix to your method name. Example:
+method simply adding 'ajax' prefix to your method name. Example:
 
     <?php namespace MyApp\Domain\Areas\Site\Controllers;
 
@@ -401,19 +401,19 @@ method simply adding 'ajax_' prefix to your method name. Example:
             /**
             *   Returns JSONable results when ajax is triggered
             **/
-            public function ajax_getLatest($lastId = null)
+            public function ajaxgetLatest($lastId = null)
             {
                 return $this->postService->getLatest($lastId);
             }
 
             /**
-            *   Returns same collection as ::ajax_getLatest() method,
+            *   Returns same collection as ::ajaxgetLatest() method,
             *   but wraps it with view
             **/
             public function getLatest()
             {
                 return \View::make('Site::posts.list', [
-                    'posts' => $this->ajax_getLatest()
+                    'posts' => $this->ajaxgetLatest()
                 ]);
             }
         }
